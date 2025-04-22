@@ -7,7 +7,7 @@ try {
     $pdo = new PDO($dsn, $usuario, $senha);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $arquivoCSV ='../database/index_2.csv';
+    $arquivoCSV ='database/index_2.csv';
     $handle = fopen($arquivoCSV, 'r');
 
     if ($handle === false) {
@@ -36,7 +36,6 @@ try {
     }
 
     fclose($handle);
-    echo "Importação finalizada com sucesso!";
 } catch (PDOException $e) {
     echo "Erro no banco de dados: " . $e->getMessage();
 } catch (Exception $e) {
