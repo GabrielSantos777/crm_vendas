@@ -7,13 +7,24 @@ $dadosGrafico = dadosGraficoProdutos();
 $dadosVendas = dadosGraficoVendas();
 $ultimasVendas = ultimasVendas();
 ?>
+
+<style>
+    .tabelaVendas{
+        border: 1px solid #ddd;
+    }
+
+    .titleTabela th{
+        padding: 20px;
+    }
+</style>
+
 <section>
     <div class="container">
         <div class="d-flex row align-items-center justify-content-center">
             <div class="col-md-6 col-xl-3 mb-2">
                 <div class="card">
                     <div class="card-body">
-                        <h6 class="mb-2">Vendas no mês</h6>
+                        <h6 class="mb-2">Total de Vendas</h6>
                         <h4 class="mb-3">R$ <?php echo number_format($totalVendas, 2, ',', '.') ?></h4>
                     </div>
                 </div>
@@ -21,7 +32,7 @@ $ultimasVendas = ultimasVendas();
             <div class="col-md-6 col-xl-3 mb-2">
                 <div class="card">
                     <div class="card-body">
-                        <h6 class="mb-2">Pedidos no mês</h6>
+                        <h6 class="mb-2">Total de Pedidos</h6>
                         <h4 class="mb-3"><?php echo $totalProduct; ?></h4>
                     </div>
                 </div>
@@ -62,9 +73,9 @@ $ultimasVendas = ultimasVendas();
 
 <h5>Vendas Recentes</h5>
 <div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
+    <table class="table table-borderless tabelaVendas">
+        <thead >
+            <tr class="text-center titleTabela" >
                 <th>ID</th>
                 <th>Data da Venda</th>
                 <th>Pagamento</th>
@@ -72,12 +83,12 @@ $ultimasVendas = ultimasVendas();
                 <th>Produto</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider" >
             <?php foreach ($ultimasVendas as $venda): ?>
-                <tr>
+                <tr class="text-center">
                     <td><?php echo $venda['id']; ?></td>
                     <td><?php echo date('d/m/Y', strtotime($venda['data'])); ?></td>
-                    <td><?php echo htmlspecialchars($venda['forma_pagamento']); ?></td>
+                    <td><?php echo ucfirst($venda['forma_pagamento']); ?></td>
                     <td>R$ <?php echo number_format($venda['valor'], 2, ',', '.'); ?></td>
                     <td><?php echo $venda['produto']; ?></td>
                 </tr>
@@ -103,8 +114,8 @@ $ultimasVendas = ultimasVendas();
             datasets: [{
                 label: 'Quantidade Vendidas',
                 data: dataProdutos,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgb(102, 16, 242)',
+                borderColor: 'rgb(38, 137, 230)',
                 borderWidth: 1
             }]
         },
@@ -114,9 +125,19 @@ $ultimasVendas = ultimasVendas();
                 y: {
                     beginAtZero: true
                 }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Produtos mais vendidos',
+                    font: {
+                        size: 18
+                    }
+                }
             }
 
-        }
+        },
+
     });
 
     window.addEventListener('resize', function() {
@@ -124,13 +145,13 @@ $ultimasVendas = ultimasVendas();
     });
 
     // <----GRÁFICO DE VENDAS POR DIA---->
-    
+
     const ctxVendas = document.getElementById('myChartVendas').getContext('2d');
 
     const labelsVendas = <?php echo json_encode(array_column($dadosVendas, 'data_venda')); ?>;
     const dataVendas = <?php echo json_encode(array_column($dadosVendas, 'quantidade_vendas')); ?>;
 
-    
+
     let graficoVendas = new Chart(ctxVendas, {
         type: 'line',
         data: {
@@ -138,10 +159,10 @@ $ultimasVendas = ultimasVendas();
             datasets: [{
                 label: 'Quantidade Vendidas',
                 data: dataVendas,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(26, 161, 120, 0.56)',
+                borderColor: 'rgb(163, 112, 247)',
                 borderWidth: 1,
-                fill: true, // deixa a linha com preenchimento, fica top!
+                fill: true,
                 tension: 0.4
             }]
         },
@@ -163,5 +184,9 @@ $ultimasVendas = ultimasVendas();
             }
 
         }
+
+    });
+    window.addEventListener('resize', function() {
+        graficoVendas.resize();
     });
 </script>

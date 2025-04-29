@@ -5,9 +5,6 @@
         <div class="sidebar-brand">CRM</div>
     </div>
     <ul class="sidebar-nav">
-        <button id="toggleSidebar" class="btn btn-light d-md-none m-2">
-            aaaaaaaa
-        </button>
         <li class="nav-title">Menu</li>
         <li class="nav-item">
             <a href="index.php?page=home" class="nav-link text-secondary ">
