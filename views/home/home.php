@@ -49,7 +49,7 @@ $ultimasVendas = ultimasVendas();
                 <div class="card">
                     <div class="card-body">
                         <h6 class="mb-2">Produto mais pedido</h6>
-                        <h4 class="mb-3"><?php echo $maisPedido['produto'] . " (" . $maisPedido['quantidade'] . ")"; ?></h4>
+                        <h4 class="mb-3"><?php echo $maisPedido['produto']; ?><span><?php echo "(" . "{$maisPedido["quantidade"]}" . ")" ?></span></h4>
                     </div>
                 </div>
             </div>

@@ -14,6 +14,14 @@
                 <i class="nav-icon me-1"></i> Home
             </a>
         </li>
+        <li class="nav-item">
+            <a href="index.php?page=vendas" class="nav-link text-secondary ">
+                <span class="material-icons d-block mb-1 align-items-center justify-content-center">
+                    point_of_sale
+                </span>
+                <i class="nav-icon me-1"></i> Vendas
+            </a>
+        </li>
 
     </ul>
 </div>
