@@ -18,6 +18,7 @@ $vendas = listarVendas();
                     <th>Data</th>
                     <th>Cliente</th>
                     <th>Pedido</th>
+                    <th>Quantidade</th>
                     <th>Valor Total</th>
                     <th>Forma de Pagamento</th>
                     <th>Status</th>
@@ -29,9 +30,10 @@ $vendas = listarVendas();
                         <td><?= date('d/m/Y H:i', strtotime($venda['data_hora'])) ?></td>
                         <td><?= htmlspecialchars($venda['cliente']) ?></td>
                         <td><?= htmlspecialchars($venda['produto']) ?></td>
+                        <td><?= htmlspecialchars($venda['quantidade']) ?></td>
                         <td>R$ <?= number_format($venda['total'], 2, ',', '.') ?></td>
-                        <td><?= htmlspecialchars($venda['forma_pagamento']) ?></td>
-                        <td><?= ucfirst($venda['status']) ?></td>
+                        <td><?= ucfirst($venda['forma_pagamento']) ?></td>
+                        <td><?= ucwords($venda['status']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -105,8 +107,11 @@ $vendas = listarVendas();
     #tabelaVendas tbody {
         display: block;
         max-height: 400px;
-        /* altura pra caber ~10 linhas, ajuste se quiser */
         overflow-y: auto;
+    }
+    #tabelaVendas td {
+        text-wrap: nowrap;
+        text-align: center;
     }
 
     #tabelaVendas thead,
@@ -135,7 +140,7 @@ $vendas = listarVendas();
                         if (data.success) {
                             alert("Venda cadastrada com sucesso!");
                             form.reset();
-                            carregarVendas(); // Função para atualizar a tabela automaticamente
+                            carregarVendas();
                         } else {
                             alert("Erro ao cadastrar venda.");
                         }
