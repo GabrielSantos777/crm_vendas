@@ -62,7 +62,7 @@ require_once('controllers/Vendas.php')
                 </div>
                 <div class="mb-3">
                     <label for="produtos" class="form-label">Produtos</label>
-                    <input type="text" class="form-control" name="produtos" placeholder="Ex: Café, Pão de queijo" required>
+                    <input type="text" class="form-control" name="produtos" placeholder="Digite o nome do produto." required>
                 </div>
                 <div class="mb-3">
                     <label for="valor" class="form-label">Valor Total</label>
