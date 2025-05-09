@@ -26,8 +26,9 @@ CREATE TABLE
 CREATE TABLE
     reservas (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        nome_cliente VARCHAR(100) NOT NULL,
-        data_reserva DATETIME NOT NULL,
-        num_pessoas INT NOT NULL,
-        observacoes TEXT
+        cliente VARCHAR(255) NOT NULL,
+        produto VARCHAR(255) NOT NULL,
+        data_hora DATETIME NOT NULL,
+        status VARCHAR(50),
+        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );

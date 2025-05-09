@@ -20,19 +20,18 @@ function cadastrarVendas()
 {
     $conexao = criarConexao();
 
-
-    $data = $_POST['data_hora'];
+    $data = isset($_POST['data_hora']) ? $_POST['data_hora'] : date('Y-m-d H:i:s');
     $cliente = $_POST['cliente'];
     $forma_pagamento = $_POST['forma_pagamento'];
     $produto = $_POST['produto'];
-    $quantidade = $_POST['quantidade'];
-    $preco = $_POST['valor'];
-    $total = $_POST['total'];
+    $quantidade = 1;
+    $preco = floatval(str_replace(',', '.', $_POST['valor']));
+    $total = $preco * $quantidade;
     $status = $_POST['status'];
 
 
     $stmt = $conexao->prepare("INSERT INTO vendas (cliente, data_hora, forma_pagamento, valor, produto, quantidade, total, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssis", $cliente, $data, $forma_pagamento, $preco, $produto, $quantidade, $total, $status);
+    $stmt->bind_param("sssdsids", $cliente, $data, $forma_pagamento, $preco, $produto, $quantidade, $total, $status);
 
 
     if ($stmt->execute()) {
@@ -40,6 +39,7 @@ function cadastrarVendas()
     } else {
         echo json_encode(["status" => "erro", "mensagem" => $stmt->error]);
     }
+
 
     $conexao->close();
 }
@@ -79,4 +79,27 @@ function totalVendas()
     $conexao->close();
 
     return $total;
+}
+
+function cadastrarReserva()
+{
+    $conexao = criarConexao();
+
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (!$data) {
+        echo json_encode(['success' => false, 'message' => 'Dados inválidos']);
+        exit;
+    }
+
+    $stmt = $conexao->prepare("INSERT INTO reservas (cliente, produto, data_hora, status) VALUES (?, ?, ?, ?)");
+    $success = $stmt->execute([
+        $data['cliente'],
+        $data['produto'],
+        $data['data_hora'],
+        $data['status']
+    ]);
+
+    echo json_encode(['success' => $success]);
+
 }
