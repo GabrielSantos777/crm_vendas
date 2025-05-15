@@ -1,6 +1,7 @@
 <?php
 require_once('controllers/Vendas.php');
 $vendas = listarVendas();
+$reservas = listarReservas();
 
 ?>
 
@@ -43,7 +44,6 @@ $vendas = listarVendas();
         </table>
     </div>
 
-
     <!-- Tabela de reservas -->
     <div class="class mt-5">
 
@@ -54,11 +54,13 @@ $vendas = listarVendas();
         <div class="table-responsive">
             <table class="table table-responsive" id="tabelaReservas">
                 <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Data/Hora</th>
-                        <th>Status</th>
-                    </tr>
+                    <?php foreach ($reservas as $reserva): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($reserva['cliente']) ?></td>
+                            <td><?= date('d/m/Y H:i', strtotime($reserva['data_hora'])) ?></td>
+                            <td><?= ucwords($reserva['status']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </thead>
                 <tbody>
                     <!-- Dados -->
@@ -240,17 +242,14 @@ $vendas = listarVendas();
         const preco = parseFloat(document.getElementById("preco").value);
         const quantidade = parseInt(document.getElementById("quantidade").value);
 
-        if (!nome || isNaN(preco) || isNaN(quantidade)) {
-            alert("Preencha os campos corretamente.");
+        if (!nome || isNaN(preco) || isNaN(quantidade) || preco <= 0 || quantidade <= 0) {
+            alert("Preencha corretamente os campos do produto.");
             return;
         }
 
-        produtos.push({
-            nome,
-            preco,
-            quantidade
-        });
+        produtos.push({ nome, preco, quantidade });
         atualizarTabela();
+
 
         document.getElementById("produto").value = "";
         document.getElementById("preco").value = "";
@@ -258,94 +257,17 @@ $vendas = listarVendas();
     });
 
 
+    document.getElementById("formNovaVenda").addEventListener("submit", function (e) {
+        if (produtos.length === 0) {
+            e.preventDefault();
+            alert("Adicione pelo menos um produto à venda.");
+            return;
+        }
 
-    document.getElementById("formNovaVenda").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const cliente = this.querySelector('input[name="cliente"]').value;
-        const forma_pagamento = this.querySelector('select[name="forma_pagamento"]').value;
-        const status = this.querySelector('select[name="status"]').value;
-
-        const total = produtos.reduce((acc, p) => acc + (p.preco * p.quantidade), 0);
-
-        const jsonData = JSON.stringify({
-            cliente,
-            forma_pagamento,
-            status,
-            produtos,
-            total
-        });
-
-
-        fetch("/controllers/Vendas.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: jsonData
-            })
-
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Venda cadastrada com sucesso!");
-                    this.reset();
-                    produtos = [];
-                    atualizarTabela();
-                } else {
-                    alert("Erro ao cadastrar venda.");
-                }
-            })
-            .catch(err => {
-                console.error("Erro na requisição:", err);
-                alert("Erro ao enviar os dados.");
-            });
-    });
-
-    const modalVenda = document.getElementById('modalVenda');
-    modalVenda.addEventListener('shown.bs.modal', () => {
-        modalVenda.removeAttribute('aria-hidden');
-        modalVenda.querySelector('input[name="cliente"]').focus();
-    });
-
-
-
-    document.getElementById("formNovaReserva").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const cliente = this.querySelector('input[name="cliente"]').value;
-        const produto = this.querySelector('input[name="produto"]').value;
-        const data_hora = this.querySelector('input[name="data_hora"]').value;
-        const status = this.querySelector('select[name="status"]').value;
-
-        const jsonData = JSON.stringify({
-            cliente,
-            produto,
-            data_hora,
-            status,
-            tipo: "reserva"
-        });
-
-        fetch("/controllers/Reservas.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: jsonData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Reserva salva com sucesso!");
-                    this.reset();
-                    // Ideal: atualizar a tabela de reservas automaticamente
-                } else {
-                    alert("Erro ao salvar reserva.");
-                }
-            })
-            .catch(err => {
-                console.error("Erro ao enviar os dados:", err);
-                alert("Erro no envio.");
-            });
+        const inputHidden = document.createElement("input");
+        inputHidden.type = "hidden";
+        inputHidden.name = "itens";
+        inputHidden.value = JSON.stringify(produtos);
+        this.appendChild(inputHidden);
     });
 </script>
