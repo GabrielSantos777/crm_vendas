@@ -20,6 +20,8 @@ function cadastrarVendas()
 {
     $conexao = criarConexao();
 
+    
+
     $data = isset($_POST['data_hora']) ? $_POST['data_hora'] : date('Y-m-d H:i:s');
     $cliente = trim($_POST['cliente']);
     $produto = trim($_POST['produto']);

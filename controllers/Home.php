@@ -97,12 +97,12 @@ function dadosGraficoVendas()
     $conexao = criarConexao();
 
     $sql = "SELECT 
-                DATE(data) AS data_venda, 
+                DATE(data_hora) AS data_venda, 
                 COUNT(*) AS quantidade_vendas, 
                 SUM(valor) AS total_vendas 
             FROM vendas 
-            GROUP BY DATE(data) 
-            ORDER BY DATE(data) ASC";
+            GROUP BY DATE(data_hora) 
+            ORDER BY DATE(data_hora) ASC";
     $resultado = $conexao->query($sql);
 
     $dados = [];
@@ -122,7 +122,7 @@ function ultimasVendas()
 {
     $conexao = criarConexao();
 
-    $sql = "SELECT id, data, forma_pagamento, valor, produto FROM vendas ORDER BY data DESC LIMIT 10";
+    $sql = "SELECT id, data_hora, forma_pagamento, valor, produto FROM vendas ORDER BY data_hora DESC LIMIT 10";
     $result = $conexao->query($sql);
 
     $vendas = [];

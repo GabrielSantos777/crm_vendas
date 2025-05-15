@@ -1,7 +1,8 @@
 <?php
 require_once('controllers/Vendas.php');
-$vendas = listarVendas();
-$reservas = listarReservas();
+$listaVendas = listarVendas();
+$listaReservas = listarReservas();
+$cadVendas = cadastrarVendas();
 
 ?>
 
@@ -29,7 +30,7 @@ $reservas = listarReservas();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($vendas as $venda): ?>
+                <?php foreach ($listaVendas as $venda): ?>
                     <tr>
                         <td><?= date('d/m/Y H:i', strtotime($venda['data_hora'])) ?></td>
                         <td><?= htmlspecialchars($venda['cliente']) ?></td>
@@ -54,7 +55,7 @@ $reservas = listarReservas();
         <div class="table-responsive">
             <table class="table table-responsive" id="tabelaReservas">
                 <thead>
-                    <?php foreach ($reservas as $reserva): ?>
+                    <?php foreach ($listaReservas as $reserva): ?>
                         <tr>
                             <td><?= htmlspecialchars($reserva['cliente']) ?></td>
                             <td><?= date('d/m/Y H:i', strtotime($reserva['data_hora'])) ?></td>
@@ -206,8 +207,8 @@ $reservas = listarReservas();
     }
 </style>
 <script>
+    // MODAL PRODUTOS (NOVA VENDA)
     let produtos = [];
-
 
     function atualizarTabela() {
         const tbody = document.querySelector("#tabelaProdutos tbody");
@@ -231,43 +232,49 @@ $reservas = listarReservas();
 
         document.getElementById("totalVenda").innerText = total.toFixed(2);
     }
-
+    // REMOVER PRODUTOS
     function removerProduto(index) {
         produtos.splice(index, 1);
         atualizarTabela();
     }
-
+    // ADICIONAR PRODUTOS(MODAL)
     document.getElementById("btnAdicionarProduto").addEventListener("click", () => {
         const nome = document.getElementById("produto").value;
         const preco = parseFloat(document.getElementById("preco").value);
         const quantidade = parseInt(document.getElementById("quantidade").value);
 
-        if (!nome || isNaN(preco) || isNaN(quantidade) || preco <= 0 || quantidade <= 0) {
-            alert("Preencha corretamente os campos do produto.");
+        if (!nome || preco <= 0 || quantidade <= 0) {
+            alert("Preencha os campos corretamente.");
             return;
         }
 
-        produtos.push({ nome, preco, quantidade });
+        produtos.push({
+            nome: nome,
+            preco: parseFloat(preco),
+            quantidade: parseInt(quantidade)
+        });
+
         atualizarTabela();
 
-
+        // Limpa os campos após adicionar
         document.getElementById("produto").value = "";
         document.getElementById("preco").value = "";
         document.getElementById("quantidade").value = "";
     });
 
-
-    document.getElementById("formNovaVenda").addEventListener("submit", function (e) {
+    // ENVIO DO FORMULÁRIO DE VENDA
+    document.getElementById("formNovaVenda").addEventListener("submit", function(e) {
         if (produtos.length === 0) {
+            alert("Adicione pelo menos um produto.");
             e.preventDefault();
-            alert("Adicione pelo menos um produto à venda.");
             return;
         }
 
-        const inputHidden = document.createElement("input");
-        inputHidden.type = "hidden";
-        inputHidden.name = "itens";
-        inputHidden.value = JSON.stringify(produtos);
-        this.appendChild(inputHidden);
+        // Cria input escondido para enviar os produtos em JSON
+        const inputProdutos = document.createElement("input");
+        inputProdutos.type = "hidden";
+        inputProdutos.name = "produtos";
+        inputProdutos.value = JSON.stringify(produtos);
+        this.appendChild(inputProdutos);
     });
 </script>

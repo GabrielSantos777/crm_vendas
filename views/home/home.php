@@ -87,7 +87,7 @@ $ultimasVendas = ultimasVendas();
             <?php foreach ($ultimasVendas as $venda): ?>
                 <tr class="text-center">
                     <td><?php echo $venda['id']; ?></td>
-                    <td><?php echo date('d/m/Y', strtotime($venda['data'])); ?></td>
+                    <td><?php echo date('d/m/Y', strtotime($venda['data_hora'])); ?></td>
                     <td><?php echo ucfirst($venda['forma_pagamento']); ?></td>
                     <td>R$ <?php echo number_format($venda['valor'], 2, ',', '.'); ?></td>
                     <td><?php echo $venda['produto']; ?></td>
