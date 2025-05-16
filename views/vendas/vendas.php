@@ -2,7 +2,10 @@
 require_once('controllers/Vendas.php');
 $listaVendas = listarVendas();
 $listaReservas = listarReservas();
-$cadVendas = cadastrarVendas();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['forma_pagamento'], $_POST['status'])) {
+    cadastrarVendas();
+}
 
 ?>
 
