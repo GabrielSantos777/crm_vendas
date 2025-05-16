@@ -120,20 +120,62 @@ function cadastrarReserva()
 {
     $conexao = criarConexao();
 
-    $data = json_decode(file_get_contents("php://input"), true);
+    date_default_timezone_set('America/Sao_Paulo');
 
-    if (!$data) {
-        echo json_encode(['success' => false, 'message' => 'Dados inválidos']);
-        exit;
+    $data = isset($_POST['data_hora_reserva']) ? $_POST['data_hora_reserva'] : date('Y-m-d H:i:s');
+    $cliente = trim($_POST['cliente_reserva']);
+    $forma_pagamento = $_POST['pagamento_reserva'];
+    $status = $_POST['status_reserva'];
+    $produtos = isset($_POST['produto_reserva']) ? json_decode($_POST['produto_reserva'], true) : [];
+
+    
+    if (empty($produtos)) {
+        echo json_encode(["status" => "erro", "mensagem" => "Nenhum produto informado."]);
+        $conexao->close();
+        return;
+    }
+    $conexao->begin_transaction();
+    try {
+        foreach ($produtos as $produto) {
+            $nome_produto = trim($produto['nome']);
+            $quantidade = intval($produto['quantidade']);
+            $preco = floatval($produto['preco']);
+            $total = $preco * $quantidade;
+
+            if (empty($nome_produto) || $quantidade <= 0 || $preco <= 0) {
+                throw new Exception("Dados inválidos para o produto: " . $nome_produto);
+            }
+
+            $stmt = $conexao->prepare(
+                "INSERT INTO reservas (cliente, data_hora, forma_pagamento, valor, produto, quantidade, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            );
+            $stmt->bind_param(
+                "sssdsids",
+                $cliente,
+                $data,
+                $forma_pagamento,
+                $preco,
+                $nome_produto,
+                $quantidade,
+                $total,
+                $status
+            );
+
+            if (!$stmt->execute()) {
+                throw new Exception("Erro ao inserir venda: " . $stmt->error);
+            }
+            $stmt->close();
+        }
+
+        $conexao->commit();
+    } catch (Exception $e) {
+        $conexao->rollback();
+        echo json_encode(["status" => "erro", "mensagem" => $e->getMessage()]);
     }
 
-    $stmt = $conexao->prepare("INSERT INTO reservas (cliente, produto, data_hora, status) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $data['cliente'], $data['produto'], $data['data_hora'], $data['status']);
+    $conexao->close();
 
-    $success = $stmt->execute();
-
-
-    echo json_encode(['success' => $success]);
 }
 
 
@@ -150,6 +192,7 @@ function listarReservas()
             $reservas[] = $row;
         }
     }
+
 
     $conexao->close();
     return $reservas;

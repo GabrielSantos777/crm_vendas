@@ -3,6 +3,9 @@ require_once('controllers/Vendas.php');
 $listaVendas = listarVendas();
 $listaReservas = listarReservas();
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente_reserva'], $_POST['pagamento_reservas'], $_POST['status_reserva'])) {
+    cadastrarReserva();
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['forma_pagamento'], $_POST['status'])) {
     cadastrarVendas();
 }
@@ -67,7 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
                     <?php endforeach; ?>
                 </thead>
                 <tbody>
-                    <!-- Dados -->
+                    <?php foreach ($listaReservas as $reserva): ?>
+                        <tr>
+                            <td><?= date('d/m/Y H:i', strtotime($reserva['data_hora'])) ?></td>
+                            <td><?= htmlspecialchars($reserva['cliente']) ?></td>
+                            <td><?= htmlspecialchars($reserva['produto']) ?></td>
+                            <td><?= htmlspecialchars($reserva['quantidade']) ?></td>
+                            <td>R$ <?= number_format($reserva['total'], 2, ',', '.') ?></td>
+                            <td><?= ucfirst($reserva['forma_pagamento']) ?></td>
+                            <td><?= ucwords($reserva['status']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -164,19 +177,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label">Cliente</label>
-                    <input type="text" class="form-control" name="cliente" required>
+                    <input type="text" class="form-control" name="cliente_reserva" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Produto</label>
-                    <input type="text" class="form-control" name="produto" required>
+                    <input type="text" class="form-control" name="produto_reserva" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Quantidae</label>
+                    <input type="number" class="form-control" name="quantidade_reserva" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Data/Hora desejada</label>
-                    <input type="datetime-local" name="data_hora" class="form-control" required>
+                    <input type="datetime-local" name="data_hora_reserva" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Forma de Pagamento</label>
+                    <select class="form-select" name="pagamento_reserva">
+                        <option value="cartao">Cartão</option>
+                        <option value="dinheiro">Dinheiro</option>
+                    </select>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Status</label>
-                    <select class="form-select" name="status">
+                    <select class="form-select" name="status_reserva">
                         <option value="reservado">Reservado</option>
                         <option value="pendente">Pendente</option>
                     </select>
