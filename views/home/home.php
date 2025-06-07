@@ -9,11 +9,17 @@ $ultimasVendas = ultimasVendas();
 ?>
 
 <style>
-    .tabelaVendas{
+    body {
+        background-color: rgb(1, 66, 146) !important;
+        color: #ddd;
+    }
+    
+
+    .tabelaVendas {
         border: 1px solid #ddd;
     }
 
-    .titleTabela th{
+    .titleTabela th {
         padding: 20px;
     }
 </style>
@@ -25,7 +31,7 @@ $ultimasVendas = ultimasVendas();
                 <div class="card">
                     <div class="card-body">
                         <h6 class="mb-2">Total de Vendas</h6>
-                        <h4 class="mb-3">R$ <?php echo number_format($totalVendas, 2, ',', '.') ?></h4>
+                        <h5 class="mb-3">R$ <?php echo number_format($totalVendas, 2, ',', '.') ?></h5>
                     </div>
                 </div>
             </div>
@@ -33,7 +39,7 @@ $ultimasVendas = ultimasVendas();
                 <div class="card">
                     <div class="card-body">
                         <h6 class="mb-2">Total de Pedidos</h6>
-                        <h4 class="mb-3"><?php echo $totalProduct; ?></h4>
+                        <h5 class="mb-3"><?php echo $totalProduct; ?></h5>
                     </div>
                 </div>
             </div>
@@ -41,7 +47,7 @@ $ultimasVendas = ultimasVendas();
                 <div class="card">
                     <div class="card-body">
                         <h6 class="mb-2">Total de Clientes</h6>
-                        <h4 class="mb-3">2.563</h4>
+                        <h5 class="mb-3">2.563</h5>
                     </div>
                 </div>
             </div>
@@ -49,7 +55,7 @@ $ultimasVendas = ultimasVendas();
                 <div class="card">
                     <div class="card-body">
                         <h6 class="mb-2">Produto mais pedido</h6>
-                        <h4 class="mb-3"><?php echo $maisPedido['produto']; ?><span><?php echo "(" . "{$maisPedido["quantidade"]}" . ")" ?></span></h4>
+                        <h5 class="mb-3"><?php echo $maisPedido['produto']; ?><span><?php echo "(" . "{$maisPedido["quantidade"]}" . ")" ?></span></h5>
                     </div>
                 </div>
             </div>
@@ -74,8 +80,8 @@ $ultimasVendas = ultimasVendas();
 <h5>Vendas Recentes</h5>
 <div class="table-responsive">
     <table class="table table-borderless tabelaVendas">
-        <thead >
-            <tr class="text-center titleTabela" >
+        <thead>
+            <tr class="text-center titleTabela">
                 <th>ID</th>
                 <th>Data da Venda</th>
                 <th>Pagamento</th>
@@ -83,7 +89,7 @@ $ultimasVendas = ultimasVendas();
                 <th>Produto</th>
             </tr>
         </thead>
-        <tbody class="table-group-divider" >
+        <tbody class="table-group-divider">
             <?php foreach ($ultimasVendas as $venda): ?>
                 <tr class="text-center">
                     <td><?php echo $venda['id']; ?></td>
@@ -114,14 +120,22 @@ $ultimasVendas = ultimasVendas();
             datasets: [{
                 label: 'Quantidade Vendidas',
                 data: dataProdutos,
-                backgroundColor: 'rgb(102, 16, 242)',
+                backgroundColor: 'rgb(7, 158, 95)',
                 borderColor: 'rgb(38, 137, 230)',
-                borderWidth: 1
+                borderWidth: 1,
             }]
         },
         options: {
             responsive: true,
             scales: {
+                x: {
+                    ticks: {
+                        display: false
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
                 y: {
                     beginAtZero: true
                 }
@@ -169,6 +183,14 @@ $ultimasVendas = ultimasVendas();
         options: {
             responsive: true,
             scales: {
+                x: {
+                    ticks: {
+                        display: false
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
                 y: {
                     beginAtZero: true
                 }
@@ -180,7 +202,10 @@ $ultimasVendas = ultimasVendas();
                     font: {
                         size: 18
                     }
-                }
+                },
+                legend: {
+                    display: true
+                },
             }
 
         }

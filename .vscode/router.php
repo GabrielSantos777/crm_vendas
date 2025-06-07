@@ -23,7 +23,7 @@ if (php_sapi_name() == "cli-server") {
             <script type="module">
                 window.addEventListener('DOMContentLoaded', (event) => {
                 const socket = io(`ws://localhost:5003`, { 
-                    auth: { token : "MDE0YWJlNjQtYTMxNC00ZmQ3LTk3YjAtZDg2ODJmMTg4ZmQzMTc0NzQwMjkxODQ1Ng==aMc" },   
+                    auth: { token : "ZWIyN2UwYTctZGE5MC00NTYxLWJmNmItMjRkZTNmNTUxZThjMTc0OTMwMDY2MjIzMw==aMc" },   
                     withCredentials: true,
                     reconnectionAttempts: 3
                 });

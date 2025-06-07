@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
             </div>
 
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="submit" class="btn gravarVenda btn-primary">Salvar</button>
             </div>
         </form>
     </div>
@@ -303,5 +303,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
         inputProdutos.name = "produtos";
         inputProdutos.value = JSON.stringify(produtos);
         this.appendChild(inputProdutos);
+    });
+
+    document.querySelector('.gravarVenda').addEventListener('click', function() {
+        window.location.reload()
     });
 </script>
