@@ -15,8 +15,7 @@ function criarConexao()
 
     return $conexao;
 }
-
-function cadastrarVendas()
+function cadastrarReservas()
 {
     $conexao = criarConexao();
 
@@ -24,6 +23,7 @@ function cadastrarVendas()
 
     $data = isset($_POST['data_hora']) ? $_POST['data_hora'] : date('Y-m-d H:i:s');
     $cliente = trim($_POST['cliente']);
+    $cpf = trim($_POST['cpf']);
     $forma_pagamento = $_POST['forma_pagamento'];
     $status = $_POST['status'];
     $produtos = isset($_POST['produtos']) ? json_decode($_POST['produtos'], true) : [];
@@ -48,23 +48,25 @@ function cadastrarVendas()
             }
 
             $stmt = $conexao->prepare(
-                "INSERT INTO vendas (cliente, data_hora, forma_pagamento, valor, produto, quantidade, total, status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                "INSERT INTO reservas (cpf, cliente, produto, valor, quantidade, total, data_hora, forma_pagamento, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
             $stmt->bind_param(
-                "sssdsids",
+                "sssdidsss",
+                $cpf,
                 $cliente,
-                $data,
-                $forma_pagamento,
-                $preco,
                 $nome_produto,
+                $preco,
                 $quantidade,
                 $total,
+                $data,
+                $forma_pagamento,
                 $status
             );
 
+
             if (!$stmt->execute()) {
-                throw new Exception("Erro ao inserir venda: " . $stmt->error);
+                throw new Exception("Erro ao inserir reserva: " . $stmt->error);
             }
             $stmt->close();
         }
@@ -78,11 +80,11 @@ function cadastrarVendas()
     $conexao->close();
 }
 
-function listarVendas()
+function listarReservas()
 {
     $conexao = criarConexao();
 
-    $sql = "SELECT * FROM vendas ORDER BY data_hora DESC";
+    $sql = "SELECT * FROM reservas ORDER BY data_hora DESC";
     $resultado = $conexao->query($sql);
 
     $vendas = [];
@@ -103,7 +105,7 @@ function totalVendas()
 {
     $conexao = criarConexao();
 
-    $sql = "SELECT SUM(total) AS total FROM vendas";
+    $sql = "SELECT SUM(total) AS total FROM reservas";
     $resultado = $conexao->query($sql);
 
     $total = 0;
@@ -115,5 +117,3 @@ function totalVendas()
 
     return $total;
 }
-
-

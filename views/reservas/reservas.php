@@ -1,17 +1,17 @@
 <?php
-require_once('controllers/Vendas.php');
-$listaVendas = listarVendas();
+require_once('controllers/Reservas.php');
+$listaReservas = listarReservas();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['forma_pagamento'], $_POST['status'])) {
-    cadastrarVendas();
+    cadastrarReservas();
 }
 
 ?>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Vendas</h2>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalVenda">+ Nova Venda</button>
+        <h2>Reservas</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalReserva">+ Nova Reserva</button>
     </div>
 
 
@@ -19,28 +19,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
 
     <!-- Tabela de vendas -->
     <div class="table">
-        <table class="table table-striped" id="tabelaVendas">
+        <table class="table table-striped" id="tabelaReservas">
             <thead>
                 <tr>
-                    <th>Data</th>
+                    <th>CPF</th>
                     <th>Cliente</th>
                     <th>Pedido</th>
                     <th>Quantidade</th>
                     <th>Valor Total</th>
+                    <th>Data</th>
                     <th>Forma de Pagamento</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($listaVendas as $venda): ?>
+                <?php foreach ($listaReservas as $reserva): ?>
                     <tr>
-                        <td><?= date('d/m/Y H:i', strtotime($venda['data_hora'])) ?></td>
-                        <td><?= htmlspecialchars($venda['cliente']) ?></td>
-                        <td><?= htmlspecialchars($venda['produto']) ?></td>
-                        <td><?= htmlspecialchars($venda['quantidade']) ?></td>
-                        <td>R$ <?= number_format($venda['total'], 2, ',', '.') ?></td>
-                        <td><?= ucfirst($venda['forma_pagamento']) ?></td>
-                        <td><?= ucwords($venda['status']) ?></td>
+                        <td><?= htmlspecialchars($reserva['cpf']) ?></td>
+                        <td><?= htmlspecialchars($reserva['cliente']) ?></td>
+                        <td><?= htmlspecialchars($reserva['produto']) ?></td>
+                        <td><?= htmlspecialchars($reserva['quantidade']) ?></td>
+                        <td>R$ <?= number_format($reserva['total'], 2, ',', '.') ?></td>
+                        <td><?= date('d/m/Y H:i', strtotime($reserva['data_hora'])) ?></td>
+                        <td><?= ucfirst($reserva['forma_pagamento']) ?></td>
+                        <td><?= ucwords($reserva['status']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -50,14 +52,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
 
 
 <!-- Modal Nova Venda -->
-<div class="modal fade" id="modalVenda" tabindex="-1" aria-labelledby="modalVendaLabel" aria-hidden="true">
+<div class="modal fade" id="modalReserva" tabindex="-1" aria-labelledby="modalReservaLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form class="modal-content" id="formNovaVenda" method="post">
+        <form class="modal-content" id="formNovaReserva" method="post">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalVendaLabel">Nova Venda</h5>
+                <h5 class="modal-title" id="modalReservaLabel">Reservas</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">CPF</label>
+                    <input type="text" class="form-control" maxlength="11" name="cpf" required>
+                </div>
                 <div class="mb-3">
                     <label class="form-label">Cliente</label>
                     <input type="text" class="form-control" name="cliente" required>
@@ -97,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
 
                         </tbody>
                     </table>
-                    <div class="text-end fw-bold">Total: R$ <span id="totalVenda">0.00</span></div>
+                    <div class="text-end fw-bold">Total: R$ <span id="totalReserva">0.00</span></div>
                 </div>
 
 
@@ -121,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
             </div>
 
             <div class="modal-footer">
-                <button type="submit" class="btn gravarVenda btn-primary">Salvar</button>
+                <button type="submit" class="btn gravarReserva btn-primary">Salvar</button>
             </div>
         </form>
     </div>
@@ -130,19 +136,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
 
 
 <style>
-    #tabelaVendas tbody {
+    #tabelaReservas tbody {
         display: block;
         max-height: 700px;
         overflow-y: auto;
     }
 
-    #tabelaVendas td {
+    #tabelaReservas td {
         text-wrap: nowrap;
         text-align: center;
     }
 
-    #tabelaVendas thead,
-    #tabelaVendas tbody tr {
+    #tabelaReservas thead,
+    #tabelaReservas tbody tr {
         display: table;
         text-align: center;
         width: 100%;
@@ -173,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
             tbody.appendChild(tr);
         });
 
-        document.getElementById("totalVenda").innerText = total.toFixed(2);
+        document.getElementById("totalReserva").innerText = total.toFixed(2);
     }
     // REMOVER PRODUTOS
     function removerProduto(index) {
@@ -206,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
     });
 
     // ENVIO DO FORMULÁRIO DE VENDA
-    document.getElementById("formNovaVenda").addEventListener("submit", function(e) {
+    document.getElementById("formNovaReserva").addEventListener("submit", function(e) {
         if (produtos.length === 0) {
             alert("Adicione pelo menos um produto.");
             e.preventDefault();
@@ -219,9 +225,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
         inputProdutos.name = "produtos";
         inputProdutos.value = JSON.stringify(produtos);
         this.appendChild(inputProdutos);
+
+        window.location.reload()
     });
 
-    document.querySelector('.gravarVenda').addEventListener('click', function() {
+    document.querySelector('.gravarReserva').addEventListener('click', function() {
         window.location.reload()
     });
 </script>

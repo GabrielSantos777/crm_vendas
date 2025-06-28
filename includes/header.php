@@ -22,6 +22,14 @@
                 <i class="nav-icon me-1"></i> Vendas
             </a>
         </li>
+        <li class="nav-item">
+            <a href="index.php?page=reservas" class="nav-link text-secondary ">
+                <span class="material-icons d-block mb-1 align-items-center justify-content-center">
+                    shopping_bag
+                </span>
+                <i class="nav-icon me-1"></i>Reservas
+            </a>
+        </li>
 
     </ul>
 </div>

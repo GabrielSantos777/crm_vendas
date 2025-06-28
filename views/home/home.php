@@ -10,7 +10,7 @@ $ultimasVendas = ultimasVendas();
 
 <style>
     body {
-        background-color: rgb(1, 66, 146) !important;
+        /* background-color: rgb(1, 66, 146) !important; */
         color: #ddd;
     }
     
