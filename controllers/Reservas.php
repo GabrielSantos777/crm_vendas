@@ -117,3 +117,53 @@ function totalVendas()
 
     return $total;
 }
+
+function editar_reserva()
+{
+    $conexao = criarConexao();
+
+    if (!isset($_GET['id'])) {
+        http_response_code(400);
+        echo json_encode(["status" => "erro", "mensagem" => "ID não fornecido."]);
+        exit;
+    }
+
+    $id = intval($_GET['id']);
+
+    $stmt = $conexao->prepare("DELETE FROM reservas WHERE id = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo json_encode(["status" => "ok", "mensagem" => "Reserva excluída com sucesso."]);
+    } else {
+        echo json_encode(["status" => "erro", "mensagem" => "Erro ao excluir reserva: " . $stmt->error]);
+    }
+
+    $stmt->close();
+    $conexao->close();
+}
+
+function excluir_reserva()
+{
+    $conexao = criarConexao();
+
+    if (!isset($_GET['id'])) {
+        http_response_code(400);
+        echo json_encode(["status" => "erro", "mensagem" => "ID não fornecido."]);
+        exit;
+    }
+
+    $id = intval($_GET['id']);
+
+    $stmt = $conexao->prepare("DELETE FROM reservas WHERE id = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo json_encode(["status" => "ok", "mensagem" => "Reserva excluída com sucesso."]);
+    } else {
+        echo json_encode(["status" => "erro", "mensagem" => "Erro ao excluir reserva: " . $stmt->error]);
+    }
+
+    $stmt->close();
+    $conexao->close();
+}
