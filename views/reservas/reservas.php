@@ -3,8 +3,19 @@ require_once('controllers/Reservas.php');
 $listaReservas = listarReservas();
 
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['forma_pagamento'], $_POST['status'])) {
     cadastrarReservas();
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    editarReserva();
+} else {
+    echo json_encode([
+        'status' => 'erro',
+        'mensagem' => 'Método inválido'
+    ]);
 }
 
 ?>
@@ -174,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Preço Unit.</label>
-                        <input type="number" class="form-control" name="preco" id="preco" step="0.01" placeholder="0.00">
+                        <input type="number" class="form-control" name="preco" id="edit_preco" step="0.01" placeholder="0.00">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Qtd</label>
@@ -319,8 +330,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
             e.preventDefault();
             return;
         }
-
-        // Cria input escondido para enviar os produtos em JSON
         const inputProdutos = document.createElement("input");
         inputProdutos.type = "hidden";
         inputProdutos.name = "produtos";
@@ -348,6 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
                 document.getElementById('edit_cliente').value = reserva.cliente;
                 document.getElementById('edit_produto').value = reserva.produto;
                 document.getElementById('edit_quantidade').value = reserva.quantidade;
+                document.getElementById('edit_preco').value = reserva.valor;
                 document.getElementById('edit_total').value = reserva.total;
                 document.getElementById('edit_data_hora').value = new Date(reserva.data_hora).toISOString().slice(0, 16);
                 document.getElementById('edit_forma_pagamento').value = reserva.forma_pagamento;
@@ -366,15 +376,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cliente'], $_POST['fo
             }
         });
 
-        // Submissão do formulário (edição)
         formEditar.addEventListener('submit', function(e) {
             e.preventDefault();
 
             const formData = new FormData(formEditar);
+
             fetch('editar_reserva.php', {
-                method: 'POST',
-                body: formData
-            }).then(res => location.reload());
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(json => {
+                    if (json.status === 'ok') {
+                        alert(json.mensagem);
+                        location.reload();
+                    } else {
+                        alert("Erro: " + json.mensagem);
+                    }
+                })
+                .catch(err => {
+                    alert("Erro na requisição: " + err.message);
+                });
         });
     });
 </script>

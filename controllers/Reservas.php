@@ -118,30 +118,49 @@ function totalVendas()
     return $total;
 }
 
-function editar_reserva()
+function editarReserva()
 {
     $conexao = criarConexao();
 
-    if (!isset($_GET['id'])) {
-        http_response_code(400);
-        echo json_encode(["status" => "erro", "mensagem" => "ID não fornecido."]);
-        exit;
-    }
+    $id = intval($_POST['id']);
+    $cpf = trim($_POST['cpf']);
+    $cliente = trim($_POST['cliente']);
+    $forma_pagamento = $_POST['forma_pagamento'];
+    $status = $_POST['status'];
+    $data = $_POST['data_hora'];
+    $produto = $_POST['produto'];
+    $quantidade = intval($_POST['quantidade']);
+    $preco = floatval($_POST['preco']);
+    $total = $quantidade * $preco;
 
-    $id = intval($_GET['id']);
-
-    $stmt = $conexao->prepare("DELETE FROM reservas WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    $stmt = $conexao->prepare(
+        "UPDATE reservas SET cpf=?, cliente=?, produto=?, valor=?, quantidade=?, total=?, data_hora=?, forma_pagamento=?, status=? WHERE id=?"
+    );
+    $stmt->bind_param(
+        "sssdidsssi",
+        $cpf,
+        $cliente,
+        $produto,
+        $preco,
+        $quantidade,
+        $total,
+        $data,
+        $forma_pagamento,
+        $status,
+        $id
+    );
 
     if ($stmt->execute()) {
-        echo json_encode(["status" => "ok", "mensagem" => "Reserva excluída com sucesso."]);
+        echo json_encode(["status" => "ok", "mensagem" => "Reserva atualizada com sucesso."]);
     } else {
-        echo json_encode(["status" => "erro", "mensagem" => "Erro ao excluir reserva: " . $stmt->error]);
+        echo json_encode(["status" => "erro", "mensagem" => "Erro ao atualizar reserva: " . $stmt->error]);
     }
 
     $stmt->close();
     $conexao->close();
 }
+
+
 
 function excluir_reserva()
 {
